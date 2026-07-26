@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Input Work Order — Percetakan</title>
+<style>
+  :root{
+    --ink:#1c1a17;
+    --paper:#f6f3ec;
+    --paper-2:#ffffff;
+    --rule:#d8d2c4;
+    --accent:#8a3324;
+    --accent-2:#c96b3f;
+    --ok:#3f6b4a;
+    --muted:#8a8375;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Courier New', ui-monospace, monospace;
+    padding:32px 16px 80px;
+  }
+  .sheet{
+    max-width:760px;
+    margin:0 auto;
+    background:var(--paper-2);
+    border:1px solid var(--rule);
+    box-shadow:0 1px 0 var(--rule), 0 12px 30px -18px rgba(0,0,0,.35);
+  }
+  .head{
+    padding:28px 32px 20px;
+    border-bottom:2px solid var(--ink);
+    position:relative;
+  }
+  .head .eyebrow{
+    letter-spacing:.18em;
+    font-size:11px;
+    color:var(--accent);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .head h1{
+    margin:0;
+    font-size:26px;
+    letter-spacing:.02em;
+  }
+  .head .sub{
+    margin-top:6px;
+    font-size:12px;
+    color:var(--muted);
+  }
+  .stamp{
+    position:absolute;
+    right:28px;
+    top:26px;
+    border:2px solid var(--accent);
+    color:var(--accent);
+    padding:6px 10px;
+    font-size:10px;
+    letter-spacing:.12em;
+    transform:rotate(4deg);
+    text-transform:uppercase;
+  }
+  form{ padding:24px 32px 8px; }
+  .row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+    margin-bottom:16px;
+  }
+  .row.full{ grid-template-columns:1fr; }
+  label{
+    display:block;
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:6px;
+  }
+  input, select, textarea{
+    width:100%;
+    font-family:inherit;
+    font-size:14px;
+    padding:10px 10px;
+    border:1px solid var(--rule);
+    background:#fffdf9;
+    color:var(--ink);
+    border-radius:2px;
+  }
+  input:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(138,51,36,.12);
+  }
+  textarea{ resize:vertical; min-height:56px; }
+  .divider{
+    border:none;
+    border-top:1px dashed var(--rule);
+    margin:22px 0;
+  }
+  .section-label{
+    font-size:11px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin:0 0 14px;
+  }
+  .actions{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:8px 0 28px;
+  }
+  button{
+    font-family:inherit;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:13px 26px;
+    font-size:13px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:2px;
+    transition:transform .12s ease, background .12s ease;
+  }
+  button:hover{ background:var(--accent); }
+  button:active{ transform:translateY(1px); }
+  button:disabled{ opacity:.5; cursor:not-allowed; }
+  .msg{
+    font-size:12px;
+    letter-spacing:.02em;
+  }
+  .msg.ok{ color:var(--ok); }
+  .msg.err{ color:var(--accent); }
+  .footer-note{
+    padding:0 32px 26px;
+    font-size:11px;
+    color:var(--muted);
+    border-top:1px solid var(--rule);
+    padding-top:14px;
+  }
+  @media (max-width:560px){
+    .row{ grid-template-columns:1fr; }
+    .head{ padding:24px 20px 18px; }
+    form{ padding:20px 20px 4px; }
+    .stamp{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <div class="head">
+    <div class="eyebrow">Production Log</div>
+    <h1>Input Work Order</h1>
+    <div class="sub">Isi detail order — tersimpan langsung ke Google Sheets</div>
+    <div class="stamp">WO Form</div>
+  </div>
+
+  <form id="orderForm">
+    <p class="section-label">Order</p>
+    <div class="row">
+      <div>
+        <label for="orderDate">Order Date</label>
+        <input type="date" id="orderDate" required>
+      </div>
+      <div>
+        <label for="workOrder">Work Order</label>
+        <input type="text" id="workOrder" placeholder="No. / Nama WO" required>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">Spesifikasi Cetak</p>
+    <div class="row">
+      <div>
+        <label for="cetakRim">Cetak Rim</label>
+        <input type="text" id="cetakRim" placeholder="mis. 5 rim">
+      </div>
+      <div>
+        <label for="paper">Paper</label>
+        <input type="text" id="paper" placeholder="mis. HVS 80gr">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="size">Size</label>
+        <input type="text" id="size" placeholder="mis. A4 / F4">
+      </div>
+      <div>
+        <label for="finishing">Finishing Jilid</label>
+        <input type="text" id="finishing" placeholder="mis. jilid spiral">
+      </div>
+    </div>
+    <div class="row full">
+      <div>
+        <label for="keterangan">Keterangan</label>
+        <textarea id="keterangan" placeholder="Catatan tambahan"></textarea>
+      </div>
+    </div>
+
+    <hr class="divider">
+    <p class="section-label">Status &amp; Vendor</p>
+    <div class="row">
+      <div>
+        <label for="status">Status</label>
+        <select id="status" required>
+          <option value="">Pilih status</option>
+          <option value="Antri">Antri</option>
+          <option value="Proses">Proses</option>
+          <option value="Finishing">Finishing</option>
+          <option value="Selesai">Selesai</option>
+          <option value="Diambil">Diambil</option>
+        </select>
+      </div>
+      <div>
+        <label for="vendor">Vendor</label>
+        <input type="text" id="vendor" placeholder="Nama vendor">
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label for="finishDate">Finish Date</label>
+        <input type="date" id="finishDate">
+      </div>
+      <div>
+        <label for="day">Day</label>
+        <input type="text" id="day" placeholder="Otomatis dari Order Date" readonly>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" id="submitBtn">Simpan ke Sheet</button>
+      <span class="msg" id="msg"></span>
+    </div>
+  </form>
+
+  <div class="footer-note">
+    Data dikirim ke Google Apps Script Web App lalu ditulis sebagai baris baru di spreadsheet kamu.
+  </div>
+</div>
+
+<script>
+  // GANTI URL INI dengan Web App URL hasil deploy Google Apps Script kamu
+  const SCRIPT_URL = "PASTE_URL_WEB_APP_APPS_SCRIPT_DI_SINI";
+
+  const dayNames = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
+  const orderDateInput = document.getElementById('orderDate');
+  const dayInput = document.getElementById('day');
+
+  orderDateInput.addEventListener('change', () => {
+    if (orderDateInput.value) {
+      const d = new Date(orderDateInput.value + 'T00:00:00');
+      dayInput.value = dayNames[d.getDay()];
+    } else {
+      dayInput.value = '';
+    }
+  });
+
+  const form = document.getElementById('orderForm');
+  const msg = document.getElementById('msg');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (SCRIPT_URL.includes('PASTE_URL_WEB_APP')) {
+      msg.textContent = 'Belum diatur: isi SCRIPT_URL dengan URL Web App Apps Script kamu.';
+      msg.className = 'msg err';
+      return;
+    }
+
+    const payload = {
+      orderDate: orderDateInput.value,
+      workOrder: document.getElementById('workOrder').value,
+      cetakRim: document.getElementById('cetakRim').value,
+      paper: document.getElementById('paper').value,
+      size: document.getElementById('size').value,
+      finishing: document.getElementById('finishing').value,
+      keterangan: document.getElementById('keterangan').value,
+      status: document.getElementById('status').value,
+      finishDate: document.getElementById('finishDate').value,
+      day: dayInput.value,
+      vendor: document.getElementById('vendor').value
+    };
+
+    submitBtn.disabled = true;
+    msg.textContent = 'Menyimpan...';
+    msg.className = 'msg';
+
+    try {
+      const res = await fetch(SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.result === 'success') {
+        msg.textContent = 'Tersimpan ✓';
+        msg.className = 'msg ok';
+        form.reset();
+        dayInput.value = '';
+      } else {
+        throw new Error(data.error || 'Gagal menyimpan');
+      }
+    } catch (err) {
+      msg.textContent = 'Gagal: ' + err.message;
+      msg.className = 'msg err';
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
+</script>
+
+</body>
+</html>
